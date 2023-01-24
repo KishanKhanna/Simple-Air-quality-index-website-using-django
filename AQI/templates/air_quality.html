@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="This website is develop for Checking Air Quality"
+    />
+    <meta name="keywords" content="aqi,Air Quality Index,python" />
+    <meta name="author" content="Kishan khanna" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}" />
+    <script
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""
+    ></script>
+
+    <title>Air Quality</title>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="row">
+        <div class="form col-md" id="form1">
+          <h2>Air Quality Index detection</h2>
+
+          <br />
+          <form id="form" method="POST" action="{% url 'get_air_quality' %}" >
+            {% csrf_token %}
+            <input
+              type="text"
+              class="form__input"
+              name="city"
+              id="city"
+              placeholder="Enter city name"
+              required
+              oninvalid="this.setCustomValidity('City name cannot be empty')"
+              oninput="this.setCustomValidity('')"
+            />
+            <label for="city" class="form__label">City</label>
+            <button class="button" role="button">Check here</button>
+          </form>
+          <br />
+          <p>©2023 Kishan khanna</p>
+        </div>
+
+        <div class="col-md output" id="output">
+          {% if error %}
+          <div id="{% if error %}visible{% endif %}" class="error-message">
+            <h4>Invalid City<br />Please Enter a valid city</h4>
+          </div>
+          {% else %}
+          <div id="" class="">
+            <h3 id="output">
+              The Air Quality Index of<br />{{city}} is :{{air_quality}}
+            </h3>
+            <br />
+            <div class="progress-container">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div id="label" style="width: fit-content"></div>
+            <div
+              id="map"
+              style="height: 19rem; width: 25rem; margin: 6% 1%"
+            ></div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <script>
+      let aqi = {{air_quality}};
+      let progressBar = document.getElementById("progress-bar");
+      let label = document.getElementById("label");
+
+      let width = (aqi / 500) * 100;
+
+      if (aqi >= 0 && aqi <= 50) {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "green";
+          label.innerHTML = "Good";
+          label.style.color = "green";
+          label.style.backgroundColor = "rgba(163, 241, 163, 0.973)"
+          label.style.display="block"
+
+      } else if (aqi > 50 && aqi <= 100) {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "yellow";
+          label.innerHTML = "Moderate";
+          label.style.color = "yellow";
+          label.style.backgroundColor = "rgba(240, 221, 186, 0.973)"
+          label.style.display="block"
+
+
+      } else if (aqi > 100 && aqi <= 150) {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "orange";
+          label.innerHTML = "Unhealthy for Sensitive Groups";
+          label.style.color = "orange";
+          label.style.backgroundColor = "rgba(255, 227, 174, 0.973)"
+          label.style.display="block"
+
+
+      } else if (aqi > 150 && aqi <= 200) {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "red";
+          label.innerHTML = "Unhealthy";
+          label.style.color = "red";
+          label.style.backgroundColor = "rgba(243, 171, 171, 0.973)"
+          label.style.display="block"
+
+
+      } else if (aqi > 200 && aqi <= 300) {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "purple";
+          label.innerHTML = "Very Unhealthy";
+          label.style.color = "purple";
+          label.style.backgroundColor = "rgba(253, 188, 253, 0.973)"
+          label.style.display="block"
+
+      } else {
+          progressBar.style.width = width + "%";
+          progressBar.style.backgroundColor = "maroon";
+          label.innerHTML = "Hazardous";
+          label.style.color = "maroon";
+          label.style.backgroundColor = "rgba(168, 101, 101, 0.973)"
+          label.style.display="block"
+      }
+    </script>
+
+
+    <script>
+        let lat = {{ lat }};
+        let lon = {{ lon }};
+        let zoom = {{ zoom }};
+        let map = L.map('map').setView([lat, lon], zoom);
+    
+        let waqiMapTileLayer = L.tileLayer(
+        "https://tiles.waqi.info/tiles/usepa-aqi/{z}/{x}/{y}.png?token=7713f48b65c508d66a5a0855aa8cca5c79c58c9c",
+        {
+          attribution: 'Map data &copy; <a href="https://waqi.info">WAQI</a>',
+          maxZoom: 18,
+        }
+      );
+        
+        let roadMapLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
+          maxZoom: 18,
+        }
+      );
+        roadMapLayer.addTo(map);
+        waqiMapTileLayer.addTo(map);
+    </script>
+    
+  </body>
+</html>
