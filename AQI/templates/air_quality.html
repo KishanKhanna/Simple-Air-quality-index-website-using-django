@@ -63,9 +63,136 @@
           </div>
           {% else %}
           <div id="" class="">
-            <h3 id="output">
-              The Air Quality Index of<br />{{city}} is :{{air_quality}}
-            </h3>
+            <div class="aqicontainer">
+              <div
+                style="
+                  border-radius: 3px;
+                  -moz-border-radius: 3px;
+                  -webkit-border-radius: 3px;
+                  border: 1px solid #d6d6d6;
+                  display: inline-block;
+                  background-color: #fff;
+                  width: 100%;
+                  -webkit-box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.075);
+                "
+                id="details-aqi-popup-1"
+              >
+                <div
+                  style="
+                    width: 94%;
+                    margin: auto;
+                    border: 0px solid black;
+                    line-height: 1.2;
+                    color: black;
+                  "
+                >
+                  <center>
+                    <div
+                      style="
+                        width: 80%;
+                        overflow: hidden;
+                        font-size: 12px;
+                        text-align: left;
+                        padding: 2px 0;
+                        overflow: hidden;
+                      "
+                    >
+                      <b>{{city}}</b> Air Quality is:
+                    </div>
+                    <div id="aqiBackground">
+                      <div style="font-size: 28px">{{air_quality}}</div>
+                    </div>
+                    <div style="font-size: 12px; margin: 5px 0; color: #888">
+                      Updated on {{date_time}}
+                    </div>
+                  </center>
+                  <table
+                    style="
+                      padding: 0px;
+                      margin: 0px;
+                      border-spacing: 0px;
+                      border: 1px solid #eee;
+                      border-radius: 3px;
+                      -moz-border-radius: 3px;
+                      -webkit-border-radius: 3px;
+                      width: 100%;
+                    "
+                  >
+                    <tbody>
+                      <tr
+                        style="
+                          height: 20px;
+                          font-size: 80%;
+                          background-color: #edf6fb;
+                          text-align: center;
+                        "
+                      >
+                        <td nowrap="nowrap">
+                          <div style="width: 100%; overflow: hidden">
+                            <span
+                              style="
+                                font-weight: bold;
+                                display: inline-block;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                max-width: 70px;"
+                              >PM2.5
+                            </span>
+                          </div>
+                        </td>
+                        <td style="font-size: 100%;  font-weight: bold;" align="center">{{pm25}}</td>
+                      </tr>
+                      <tr
+                        style="
+                          height: 20px;
+                          font-size: 80%;
+                          text-align: center;
+                        "
+                      >
+                        <td nowrap="nowrap">
+                          <div style="width: 100%; overflow: hidden">
+                            <span
+                              style="
+                                font-weight: bold;
+                                display: inline-block;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                max-width: 70px;
+                              "
+                              >PM10
+                            </span>
+                          </div>
+                        </td>
+                        <td style="font-size: 100%;  font-weight: bold;" align="center">{{pm10}}</td>
+                      </tr>
+                      <tr
+                        style="
+                          height: 20px;
+                          font-size: 80%;
+                          background-color: #edf6fb;
+                          text-align: center;
+                        "
+                      >
+                        <td nowrap="nowrap">
+                          <div style="width: 100%; overflow: hidden">
+                            <span
+                              style="
+                                font-weight: bold;
+                                display: inline-block;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                max-width: 70px;"
+                              >O3
+                            </span>
+                          </div>
+                        </td>
+                        <td style="font-size: 100%;  font-weight: bold; " align="center">{{o3}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
             <br />
             <div class="progress-container">
               <div class="progress-bar" id="progress-bar"></div>
@@ -73,7 +200,7 @@
             <div id="label" style="width: fit-content"></div>
             <div
               id="map"
-              style="height: 19rem; width: 25rem; margin: 6% 1%"
+              style="height: 22em; width: 28em; margin: 6% 1%"
             ></div>
           </div>
           {% endif %}
@@ -84,24 +211,28 @@
       let aqi = {{air_quality}};
       let progressBar = document.getElementById("progress-bar");
       let label = document.getElementById("label");
-
       let width = (aqi / 500) * 100;
+      let aqiBackground= document.getElementById("aqiBackground");
 
       if (aqi >= 0 && aqi <= 50) {
           progressBar.style.width = width + "%";
           progressBar.style.backgroundColor = "green";
           label.innerHTML = "Good";
           label.style.color = "green";
-          label.style.backgroundColor = "rgba(163, 241, 163, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(163, 241, 163, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "green";
+
 
       } else if (aqi > 50 && aqi <= 100) {
           progressBar.style.width = width + "%";
           progressBar.style.backgroundColor = "yellow";
           label.innerHTML = "Moderate";
           label.style.color = "yellow";
-          label.style.backgroundColor = "rgba(240, 221, 186, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(240, 221, 186, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "yellow";
+
 
 
       } else if (aqi > 100 && aqi <= 150) {
@@ -109,8 +240,10 @@
           progressBar.style.backgroundColor = "orange";
           label.innerHTML = "Unhealthy for Sensitive Groups";
           label.style.color = "orange";
-          label.style.backgroundColor = "rgba(255, 227, 174, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(255, 227, 174, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "orange";
+
 
 
       } else if (aqi > 150 && aqi <= 200) {
@@ -118,8 +251,10 @@
           progressBar.style.backgroundColor = "red";
           label.innerHTML = "Unhealthy";
           label.style.color = "red";
-          label.style.backgroundColor = "rgba(243, 171, 171, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(243, 171, 171, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "red";
+
 
 
       } else if (aqi > 200 && aqi <= 300) {
@@ -127,16 +262,20 @@
           progressBar.style.backgroundColor = "purple";
           label.innerHTML = "Very Unhealthy";
           label.style.color = "purple";
-          label.style.backgroundColor = "rgba(253, 188, 253, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(253, 188, 253, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "purple";
+
 
       } else {
           progressBar.style.width = width + "%";
           progressBar.style.backgroundColor = "maroon";
           label.innerHTML = "Hazardous";
           label.style.color = "maroon";
-          label.style.backgroundColor = "rgba(168, 101, 101, 0.973)"
-          label.style.display="block"
+          label.style.backgroundColor = "rgba(168, 101, 101, 0.973)";
+          label.style.display="block";
+          aqiBackground.style.backgroundColor = "maroon";
+
       }
     </script>
 

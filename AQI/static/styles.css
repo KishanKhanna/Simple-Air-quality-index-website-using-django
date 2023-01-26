@@ -163,7 +163,7 @@ p{
 
 .progress-container {
   width: 100%;
-  height: 15px;
+  height: 1rem;
   background-color: #ddd;
   border-radius: 5px;
 }
@@ -181,6 +181,15 @@ p{
   font-size: 1.5rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: #d1d2d3;
+}
+
+.aqiBackground{
+  padding: 5px 0px;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
 }
 
 @media (max-width: 576px) {

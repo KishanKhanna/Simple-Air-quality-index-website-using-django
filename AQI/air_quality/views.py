@@ -6,7 +6,7 @@ import requests
 
 # Create your views here.
 def index(request):
-    context = {'city':"city",'error':False}
+    context = {'city':"city","date time":"date",'error':False}
     map_context = {'lat': 0, 'lon': 0, 'zoom': 0}
     context.update(map_context)
 
@@ -39,11 +39,26 @@ def get_air_quality(request):
             city = city.capitalize()
             lat = data['data']['city']['geo'][0]
             lon = data['data']['city']['geo'][1]
+            date_time = data['data']['time']['s']
+            try:
+                pm25 = data['data']['iaqi']['pm25']['v']
+                pm10 = data['data']['iaqi']['pm10']['v']
+                o3 = data['data']['iaqi']['o3']['v']
+                aqiContext={'pm25':pm25,'pm10':pm10,'o3':o3}
+            except:
+                pm25 = "not available"
+                pm10 =  "not available"
+                o3 =  "not available"
+                aqiContext={'pm25':pm25,'pm10':pm10,'o3':o3}
+
             # Update context variable with air quality and error data
-            context = {'air_quality': air_quality,'city':city,'error':False,'lat': lat, 'lon': lon}
+            context = {'air_quality': air_quality,'city':city, "date_time":date_time,'error':False}
             map_context = {'lat': lat, 'lon': lon, 'zoom': 10}
-            context = {'air_quality': air_quality,'city':city,'error':False}
+
+            context = {'air_quality': air_quality,'city':city,"date_time":date_time,'error':False}
             context.update(map_context)
+            context.update(aqiContext)
+
     except:
         #air_quality = 'Invalid city name, please try again with correct city name'
         air_quality = None
